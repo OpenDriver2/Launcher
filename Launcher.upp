@@ -1,0 +1,22 @@
+description "ReDriver2 Launcher\377";
+
+uses
+	CtrlLib;
+
+file
+	iso9660_dump.h,
+	iso9660_dump.cpp,
+	RED2Launcher.h,
+	ini.c,
+	ini.h,
+	config_ini_writer.h,
+	config_ini_writer.cpp,
+	icon.rc,
+	main.cpp,
+	images.iml,
+	iso9660.h,
+	RED2Launcher.lay;
+
+mainconfig
+	"" = "GUI";
+
