@@ -1,8 +1,9 @@
-LAYOUT(RED2LauncherLayout, 616, 188)
-	ITEM(Upp::Button, launchBtn, SetLabel(t_("&Launch Game")).Tip(t_("Launches REDRIVER2")).LeftPosZ(496, 112).TopPosZ(156, 24))
-	ITEM(Upp::Button, configureBtn, SetLabel(t_("&Configure")).Tip(t_("This will allow you to configure the game")).LeftPosZ(496, 112).TopPosZ(44, 24))
-	ITEM(Upp::Button, setupBtn, SetLabel(t_("Setup &Wizard")).Tip(t_("Run game setup wizard")).LeftPosZ(496, 112).TopPosZ(12, 24))
-	ITEM(Upp::ImageCtrl, logoImg, LeftPosZ(8, 476).TopPosZ(8, 172))
+LAYOUT(RED2LauncherLayout, 380, 136)
+	ITEM(Upp::Button, launchBtn, SetLabel(t_("&Launch Game")).Tip(t_("Launches REDRIVER2")).LeftPosZ(260, 112).TopPosZ(108, 24))
+	ITEM(Upp::Button, configureBtn, SetLabel(t_("&Configure")).Tip(t_("This will allow you to configure the game")).LeftPosZ(260, 112).TopPosZ(32, 24))
+	ITEM(Upp::Button, setupBtn, SetLabel(t_("Setup &Wizard")).Tip(t_("Run game setup wizard")).LeftPosZ(260, 112).TopPosZ(4, 24))
+	ITEM(Upp::ImageCtrl, logoImg, LeftPosZ(8, 244).TopPosZ(4, 88))
+	ITEM(Upp::LabelBox, dv___4, LeftPosZ(8, 364).TopPosZ(92, 12))
 END_LAYOUT
 
 LAYOUT(ConfigWindowLayout, 612, 220)
@@ -29,9 +30,17 @@ LAYOUT(ConfigWindowLayout, 612, 220)
 	ITEM(Upp::LabelBox, dv___20, SetLabel(t_("Controls")).LeftPosZ(196, 220).TopPosZ(68, 96))
 END_LAYOUT
 
-LAYOUT(SetupWizardWindow, 296, 72)
-	ITEM(Upp::Button, selCDImageBtn, SetLabel(t_("Use &CD image")).Tip(t_("Choose ISO/BIN image to use directly (or automatically extract)")).LeftPosZ(20, 124).TopPosZ(36, 28))
-	ITEM(Upp::Button, selFolderBtn, SetLabel(t_("Choose &DRIVER2 folder")).Tip(t_("Suitable for users who want to run game directly from CD-ROM")).LeftPosZ(152, 124).VSizePosZ(36, 8))
-	ITEM(Upp::Label, dv___2, SetLabel(t_("Select the filesystem method")).SetAlign(ALIGN_CENTER).LeftPosZ(16, 260).TopPosZ(8, 19))
+LAYOUT(SetupWizardWindow, 476, 216)
+	ITEM(Upp::Button, installBtn, SetLabel(t_("&Install")).Tip(t_("Choose ISO/BIN image to use directly (or automatically extract)")).LeftPosZ(344, 124).TopPosZ(180, 28))
+	ITEM(Upp::LabelBox, dv___1, SetLabel(t_("Extra options")).LeftPosZ(8, 460).TopPosZ(112, 60))
+	ITEM(Upp::EditString, imageCD1FilenameEdit, LeftPosZ(16, 368).TopPosZ(40, 19))
+	ITEM(Upp::Button, imageCD1ChooseBtn, SetLabel(t_("Choose...")).LeftPosZ(392, 68).TopPosZ(36, 24))
+	ITEM(Upp::EditString, imageCD2FilenameEdit, LeftPosZ(16, 368).TopPosZ(76, 19))
+	ITEM(Upp::Button, imageCD2ChooseBtn, SetLabel(t_("Choose...")).LeftPosZ(392, 68).TopPosZ(72, 24))
+	ITEM(Upp::Label, dv___6, SetLabel(t_("CD1 image")).LeftPosZ(16, 180).TopPosZ(24, 13))
+	ITEM(Upp::Label, dv___7, SetLabel(t_("CD2 image")).LeftPosZ(16, 180).TopPosZ(60, 13))
+	ITEM(Upp::LabelBox, dv___8, SetLabel(t_("Installation media")).LeftPosZ(8, 460).TopPosZ(8, 96))
+	ITEM(Upp::Option, unpackFMV_XACheck, SetLabel(t_("Full motion video and audio for cutscenes (Java required)")).LeftPosZ(16, 444).TopPosZ(128, 16))
+	ITEM(Upp::Option, fullUnpackCheck, SetLabel(t_("Full game unpacking (modding support)")).LeftPosZ(16, 444).TopPosZ(148, 16))
 END_LAYOUT
 

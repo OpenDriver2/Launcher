@@ -116,10 +116,24 @@ const char config_ini_fmt[] = \
 
 //--------------------------------------------------------------------
 
+void BestDefaultConfig(config_data_t* cfgData)
+{
+	cfgData->imageFilename = NULL;
+	cfgData->fullScreen = 0;
+	cfgData->pgxpTextureCorrection = 1;
+	cfgData->pgxpZBuffer = 1;
+	cfgData->bilinearFiltering = 1;
+	cfgData->disableChicagoBridges = 0;
+	cfgData->fieldOfView = 256;
+	cfgData->widescreenOverlayAlign = 1;
+	cfgData->fastLoadingScreens = 1;
+	cfgData->languageId = 0;
+}
+
 // stores config.ini from template above
 bool SaveNewConfigFile(config_data_t* data)
 {
-	static char buffer[sizeof(config_ini_settings) + 512];
+	static char buffer[sizeof(config_ini_settings) + 2048];
 	memset(buffer, 0, sizeof(buffer));
 	
 	// make actual config ini data

@@ -16,6 +16,8 @@ struct config_data_t
 	int languageId;
 };
 
+void BestDefaultConfig(config_data_t* data);
+
 bool SaveNewConfigFile(config_data_t* data);
 
 #endif
