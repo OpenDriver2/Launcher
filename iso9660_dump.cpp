@@ -30,7 +30,7 @@ typedef	unsigned long	u_long;
 #	define PATH_SEPARATOR '\\'
 #endif
 
-#include <minmax.h>
+#define min(a,b) (((a)<(b))?(a):(b))
 
 struct CDImage_t
 {
@@ -117,7 +117,8 @@ bool CreateFolderFunc(CDImage_t* im, TOC* toc, const char* folderName, void* use
 bool DumpFileFunc(CDImage_t* im, TOC* toc, const char* filename, void* userData)
 {
 	Sector sector;
-	int remainingBytes, interleaved;
+	size_t remainingBytes;
+	int interleaved;
 	
 	// read first sector
 	fread(&sector, sizeof(Sector), 1, im->fp);
