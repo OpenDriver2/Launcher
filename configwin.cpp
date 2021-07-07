@@ -59,6 +59,7 @@ void ConfigWindow::LoadConfig()
 {
 	config_data_t cfgData;
 	ini_t* config;
+
 	BestDefaultConfig(&cfgData);
 
 	config = ini_load("config.ini");
@@ -98,6 +99,12 @@ void ConfigWindow::LoadConfig()
 		ini_sget(config, "game", "languageId", "%d", &cfgData.languageId);
 		//ini_sget(config, "game", "overrideContent", "%d", &gContentOverride);
 		
+		ParseKeyboardMappings(config, "kbcontrols_game", cfgData.keyboardCtrls);
+		//ParseKeyboardMappings(config, "kbcontrols_menu", g_kbMenuMappings);
+
+		ParseControllerMappings(config, "controls_game", cfgData.controllerCtrls);
+		//ParseControllerMappings(config, "controls_menu", g_gcMenuMappings);
+		
 		ini_free(config);
 	}
 
@@ -115,6 +122,7 @@ void ConfigWindow::LoadConfig()
 bool ConfigWindow::StoreConfig()
 {
 	config_data_t cfgData;
+	BestDefaultConfig(&cfgData);
 	
 	std::string imageFilenameStr = (~imageFilenameEdit).ToStd();
 

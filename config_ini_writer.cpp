@@ -5,45 +5,45 @@
 const char config_ini_kbcontrols[] = \
 "# Game keyboard controls (Psy-X layer PSX mapping)\r\n"
 "[kbcontrols_game]\r\n"
-"cross=up\r\n"
-"square=down\r\n"
-"circle=right shift\r\n"
-"triangle=space\r\n"
-"up=NONE\r\n"
-"down=NONE\r\n"
-"left=left\r\n"
-"right=right\r\n"
-"start=escape\r\n"
-"select=c\r\n"
-"l1=right ctrl\r\n"
-"r1=H\r\n"
-"l2=A\r\n"
-"r2=D\r\n"
-"l3=S\r\n"
-"r3=return";
+"cross=%s\r\n"
+"square=%s\r\n"
+"circle=%s\r\n"
+"triangle=%s\r\n"
+"up=%s\r\n"
+"down=%s\r\n"
+"left=%s\r\n"
+"right=%s\r\n"
+"start=%s\r\n"
+"select=%s\r\n"
+"l1=%s\r\n"
+"r1=%s\r\n"
+"l2=%s\r\n"
+"r2=%s\r\n"
+"l3=%s\r\n"
+"r3=%s";
 
 const char config_ini_controls[] = \
 "[controls_game]\r\n"
-"# cross=a\r\n"
-"# square=x\r\n"
-"# circle=b\r\n"
-"# triangle=y\r\n"
-"# up=dpup\r\n"
-"# down=dpdown\r\n"
-"# left=dpleft\r\n"
-"# right=dpright\r\n"
-"# start=start\r\n"
-"# select=back\r\n"
-"# l1=leftshoulder\r\n"
-"# r1=rightshoulder\r\n"
-"# l2=lefttrigger\r\n"
-"# r2=righttrigger\r\n"
-"# l3=leftstick\r\n"
-"# r3=rightstick\r\n"
-"# axis_left_x=leftx\r\n"
-"# axis_left_y=lefty\r\n"
-"# axis_right_x=rightx\r\n"
-"# axis_right_y=righty";
+"cross=%s\r\n"
+"square=%s\r\n"
+"circle=%s\r\n"
+"triangle=%s\r\n"
+"up=%s\r\n"
+"down=%s\r\n"
+"left=%s\r\n"
+"right=%s\r\n"
+"start=%s\r\n"
+"select=%s\r\n"
+"l1=%s\r\n"
+"r1=%s\r\n"
+"l2=%s\r\n"
+"r2=%s\r\n"
+"l3=%s\r\n"
+"r3=%s\r\n"
+"axis_left_x=%s\r\n"
+"axis_left_y=%s\r\n"
+"axis_right_x=%s\r\n"
+"axis_right_y=%s";
 
 const char config_ini_settings[] = \
 "[cdfs]\r\n"
@@ -135,8 +135,58 @@ void BestDefaultConfig(config_data_t* cfgData)
 // stores config.ini from template above
 bool SaveNewConfigFile(config_data_t* data)
 {
+	static char kbctrl_buffer[sizeof(config_ini_kbcontrols) + 2048];
+	memset(kbctrl_buffer, 0, sizeof(kbctrl_buffer));
+	
+	static char ctrl_buffer[sizeof(config_ini_controls) + 2048];
+	memset(ctrl_buffer, 0, sizeof(ctrl_buffer));
+	
 	static char buffer[sizeof(config_ini_settings) + 2048];
 	memset(buffer, 0, sizeof(buffer));
+	
+	// keyboard controls config
+	sprintf(kbctrl_buffer, config_ini_kbcontrols,
+		KeyboardScanToName(data->keyboardCtrls.kc_cross),
+		KeyboardScanToName(data->keyboardCtrls.kc_square),
+		KeyboardScanToName(data->keyboardCtrls.kc_circle),
+		KeyboardScanToName(data->keyboardCtrls.kc_triangle),
+		KeyboardScanToName(data->keyboardCtrls.kc_dpad_up),
+		KeyboardScanToName(data->keyboardCtrls.kc_dpad_down),
+		KeyboardScanToName(data->keyboardCtrls.kc_dpad_left),
+		KeyboardScanToName(data->keyboardCtrls.kc_dpad_right),
+		KeyboardScanToName(data->keyboardCtrls.kc_start),
+		KeyboardScanToName(data->keyboardCtrls.kc_select),
+		KeyboardScanToName(data->keyboardCtrls.kc_l1),
+		KeyboardScanToName(data->keyboardCtrls.kc_r1),
+		KeyboardScanToName(data->keyboardCtrls.kc_l2),
+		KeyboardScanToName(data->keyboardCtrls.kc_r2),
+		KeyboardScanToName(data->keyboardCtrls.kc_l3),
+		KeyboardScanToName(data->keyboardCtrls.kc_r3)
+		);
+	
+	// controls config
+	sprintf(ctrl_buffer, config_ini_controls,
+		ControllerMapToName(data->controllerCtrls.gc_cross),
+		ControllerMapToName(data->controllerCtrls.gc_square),
+		ControllerMapToName(data->controllerCtrls.gc_circle),
+		ControllerMapToName(data->controllerCtrls.gc_triangle),
+		ControllerMapToName(data->controllerCtrls.gc_dpad_up),
+		ControllerMapToName(data->controllerCtrls.gc_dpad_down),
+		ControllerMapToName(data->controllerCtrls.gc_dpad_left),
+		ControllerMapToName(data->controllerCtrls.gc_dpad_right),
+		ControllerMapToName(data->controllerCtrls.gc_start),
+		ControllerMapToName(data->controllerCtrls.gc_select),
+		ControllerMapToName(data->controllerCtrls.gc_l1),
+		ControllerMapToName(data->controllerCtrls.gc_r1),
+		ControllerMapToName(data->controllerCtrls.gc_l2),
+		ControllerMapToName(data->controllerCtrls.gc_r2),
+		ControllerMapToName(data->controllerCtrls.gc_l3),
+		ControllerMapToName(data->controllerCtrls.gc_r3),
+		ControllerMapToName(data->controllerCtrls.gc_axis_left_x),
+		ControllerMapToName(data->controllerCtrls.gc_axis_left_y),
+		ControllerMapToName(data->controllerCtrls.gc_axis_right_x),
+		ControllerMapToName(data->controllerCtrls.gc_axis_right_y)
+		);
 	
 	// make actual config ini data
 	sprintf(buffer, config_ini_settings,
@@ -160,7 +210,7 @@ bool SaveNewConfigFile(config_data_t* data)
 	}
 	
 	// write final INI file contents
-	fprintf(fp, config_ini_fmt, config_ini_kbcontrols, config_ini_controls, buffer);
+	fprintf(fp, config_ini_fmt, kbctrl_buffer, ctrl_buffer, buffer);
 	
 	fclose(fp);
 	
