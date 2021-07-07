@@ -38,6 +38,9 @@ typedef struct
 
 typedef struct ini_t ini_t;
 
+const char* KeyboardScanToName(int scan);
+const char* ControllerMapToName(int value);
+
 void DefaultMappings(PsyXKeyboardMapping& mapping);
 void DefaultMappings(PsyXControllerMapping& mapping);
 

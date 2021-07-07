@@ -99,6 +99,35 @@ int PsyX_LookupGameControllerMapping(const char* str, int default_value)
 	return default_value;
 }
 
+// this is for saving
+const char* KeyboardScanToName(int scan)
+{
+	return SDL_GetScancodeName((SDL_Scancode)scan);
+}
+
+const char* ControllerMapToName(int value)
+{
+	// parse axis name
+	if(value & CONTROLLER_MAP_FLAG_AXIS)
+	{
+		static char name[128];
+		bool inverse = (value & CONTROLLER_MAP_FLAG_INVERSE);
+		
+		value &= ~(CONTROLLER_MAP_FLAG_AXIS | CONTROLLER_MAP_FLAG_INVERSE);
+		
+		// add a minus prefix
+		if(inverse)
+		{
+			sprintf(name, "-%s", SDL_GameControllerGetStringForAxis((SDL_GameControllerAxis)value));
+			return name;
+		}
+			
+		return SDL_GameControllerGetStringForAxis((SDL_GameControllerAxis)value);
+	}
+	
+	return SDL_GameControllerGetStringForButton((SDL_GameControllerButton)value);
+}
+
 void DefaultMappings(PsyXKeyboardMapping& mapping)
 {
 	mapping.kc_square = SDL_SCANCODE_DOWN;
