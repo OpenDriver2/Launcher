@@ -67,6 +67,22 @@ void ControlsWindow::InitButtons(bool controller)
 	
 	if(controller)
 	{
+		crossVal <<= ControllerMapToName(controllerCtrls.gc_cross);
+		squareVal <<= ControllerMapToName(controllerCtrls.gc_square);
+		circleVal <<= ControllerMapToName(controllerCtrls.gc_circle);
+		triangleVal <<= ControllerMapToName(controllerCtrls.gc_triangle);
+		//crossVal <<= ControllerMapToName(controllerCtrls.gc_dpad_up);
+		//crossVal <<= ControllerMapToName(controllerCtrls.gc_dpad_down);
+		dpad_leftVal <<= ControllerMapToName(controllerCtrls.gc_dpad_left);
+		dpad_rightVal <<= ControllerMapToName(controllerCtrls.gc_dpad_right);
+		//crossVal <<= ControllerMapToName(controllerCtrls.gc_start);
+		selectVal <<= ControllerMapToName(controllerCtrls.gc_select);
+		l1Val <<= ControllerMapToName(controllerCtrls.gc_l1);
+		r1Val <<= ControllerMapToName(controllerCtrls.gc_r1);
+		l2Val <<= ControllerMapToName(controllerCtrls.gc_l2);
+		r2Val <<= ControllerMapToName(controllerCtrls.gc_r2);
+		l3Val <<= ControllerMapToName(controllerCtrls.gc_l3);
+		r3Val <<= ControllerMapToName(controllerCtrls.gc_r3);
 	}
 	else
 	{
@@ -138,6 +154,8 @@ void ControlsWindow::UpdateSDL2()
 	if(!waitingAction)
 		return;
 	
+	// focus to SDL window - only when this window has focus. Also deep check ensures that this
+	// window will not flicker.
 	if(HasFocusDeep())
 	{
 		SDL_RaiseWindow(waitingHWND);
@@ -147,6 +165,7 @@ void ControlsWindow::UpdateSDL2()
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
+		// cancel or delete
 		switch (event.type)
 		{
 			case SDL_KEYDOWN:
@@ -154,31 +173,63 @@ void ControlsWindow::UpdateSDL2()
 			{
 				int nKey = event.key.keysym.scancode;
 				
-				if(nKey == SDL_SCANCODE_DELETE)
+				if(nKey == SDL_SCANCODE_ESCAPE)
 				{
-					(*waitingAction) = SDL_SCANCODE_UNKNOWN;
-					(*waitingEdit) <<= "";
-					waitingEdit = nullptr;
-					waitingAction = nullptr;
-					
-					CloseSDL2();
-					break;
-				}
-				
-				waitingVal = SDL_GetScancodeName((SDL_Scancode)nKey);
-				
-				// done?
-				if(event.type == SDL_KEYUP)
-				{
-					(*waitingAction) = nKey;
 					(*waitingEdit) <<= waitingVal;
 					waitingEdit = nullptr;
 					waitingAction = nullptr;
 					
 					CloseSDL2();
+					return;
+				}
+				
+				if(nKey == SDL_SCANCODE_DELETE)
+				{
+					if(waitingController)
+						(*waitingAction) = SDL_CONTROLLER_BUTTON_INVALID;
+					else
+						(*waitingAction) = SDL_SCANCODE_UNKNOWN;
+					
+					(*waitingEdit) <<= "";
+					waitingEdit = nullptr;
+					waitingAction = nullptr;
+					
+					CloseSDL2();
+					return;
 				}
 				
 				break;
+			}
+		}
+		
+		if(waitingController)
+		{
+			// TODO:
+		}
+		else
+		{
+			switch (event.type)
+			{
+				case SDL_KEYDOWN:
+				case SDL_KEYUP:
+				{
+					int nKey = event.key.keysym.scancode;
+	
+					waitingVal = SDL_GetScancodeName((SDL_Scancode)nKey);
+					
+					// done?
+					if(event.type == SDL_KEYUP)
+					{
+						(*waitingAction) = nKey;
+						(*waitingEdit) <<= waitingVal;
+						waitingEdit = nullptr;
+						waitingAction = nullptr;
+						
+						CloseSDL2();
+					}
+					
+					break;
+				}
 			}
 		}
 	}
