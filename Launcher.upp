@@ -24,6 +24,8 @@ file
 	iso9660.h,
 	setupwin.cpp,
 	configwin.cpp,
+	psyx_control_mapping.h,
+	psyx_control_mapping.cpp,
 	ctrlwin.cpp,
 	RED2Launcher.lay;
 

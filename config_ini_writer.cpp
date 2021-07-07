@@ -128,6 +128,8 @@ void BestDefaultConfig(config_data_t* cfgData)
 	cfgData->widescreenOverlayAlign = 1;
 	cfgData->fastLoadingScreens = 1;
 	cfgData->languageId = 0;
+	DefaultMappings(cfgData->keyboardCtrls);
+	DefaultMappings(cfgData->controllerCtrls);
 }
 
 // stores config.ini from template above
