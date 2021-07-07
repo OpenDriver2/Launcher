@@ -41,6 +41,11 @@ ConfigWindow::ConfigWindow()
 		ctrlWindow.Open(this);
 	};
 	
+	joy1CtrlsBtn << [=] {
+		ctrlWindow.InitButtons(true);
+		ctrlWindow.Open(this);
+	};
+	
 	fs.ActiveDir(".");
 	fs.Type("Compatible ISO 9660 files (.bin, .iso, .ccd)", "*.bin *.iso *.ccd");
 	
@@ -50,7 +55,7 @@ ConfigWindow::ConfigWindow()
 	
 	// temporarily disabled
 	//keyboardCtrlsBtn.Enable(0);
-	joy1CtrlsBtn.Enable(0);
+	//joy1CtrlsBtn.Enable(0);
 
 	// load config.ini
 	LoadConfig();
