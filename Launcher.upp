@@ -3,6 +3,13 @@ description "ReDriver2 Launcher\377";
 uses
 	CtrlLib;
 
+library(WIN32) SDL2.lib;
+
+library(POSIX) SDL2;
+
+pkg_config
+	sdl2;
+
 file
 	iso9660_dump.h,
 	iso9660_dump.cpp,
@@ -15,6 +22,9 @@ file
 	main.cpp,
 	images.iml,
 	iso9660.h,
+	setupwin.cpp,
+	configwin.cpp,
+	ctrlwin.cpp,
 	RED2Launcher.lay;
 
 mainconfig

@@ -6,8 +6,27 @@
 
 using namespace Upp;
 
+extern const char* LanguageList[];
+
 #define LAYOUTFILE <Launcher/RED2Launcher.lay>
 #include <CtrlCore/lay.h>
+
+//------------------------
+
+class ControlsWindow : public WithKeyControlsWindow<TopWindow> {
+public:
+	ControlsWindow();
+		
+protected:
+	
+	typedef WithKeyControlsWindow<TopWindow> BaseCtrl;
+	
+	virtual void Close();
+	
+	bool InitSDL2();
+	void CloseSDL2();
+	void UpdateSDL2();
+};
 
 struct ConfigWindow : public WithConfigWindowLayout<TopWindow> {
 public:
@@ -18,6 +37,7 @@ public:
 
 protected:
 	FileSel fs;
+	ControlsWindow ctrlWindow;
 };
 
 //------------------------

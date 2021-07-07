@@ -30,8 +30,6 @@ typedef	unsigned long	u_long;
 #	define PATH_SEPARATOR '\\'
 #endif
 
-#include <minmax.h>
-
 struct CDImage_t
 {
 	FILE* fp;		// any poitner
@@ -117,13 +115,13 @@ bool CreateFolderFunc(CDImage_t* im, TOC* toc, const char* folderName, void* use
 bool DumpFileFunc(CDImage_t* im, TOC* toc, const char* filename, void* userData)
 {
 	Sector sector;
-	int remainingBytes, interleaved;
+	int interleaved;
 	
 	// read first sector
 	fread(&sector, sizeof(Sector), 1, im->fp);
 
 	interleaved = sector.subHead[0] == 1;
-	remainingBytes = toc->fileSize[0];
+	u_int remainingBytes = toc->fileSize[0];
 	
 	if(*filename == PATH_SEPARATOR)
 		filename++;
@@ -160,21 +158,31 @@ bool DumpFileFunc(CDImage_t* im, TOC* toc, const char* filename, void* userData)
 				{
 					Sector* pSector = &sector;
 					
-					fwrite(pSector->data, 1, min(remainingBytes, sizeof(pSector->data)), fp);
+					int writeCnt = remainingBytes;
+					if(writeCnt > sizeof(pSector->data))
+						writeCnt = sizeof(pSector->data);
+					
+					fwrite(pSector->data, 1, writeCnt, fp);
 					
 					remainingBytes -= sizeof(pSector->data);
 				}
+#if 0
 				else
 				{
 					// extract whole sectors?
 					// FIXME: wtf with file sizes?
 					AudioSector* pSector = (AudioSector*)&sector;
 
-					fwrite(pSector, 1, min(remainingBytes, sizeof(AudioSector)), fp);
+					int writeCnt = remainingBytes;
+					if(writeCnt > sizeof(pSector->data))
+						writeCnt = sizeof(pSector->data);
+
+					fwrite(pSector, 1, writeCnt, fp);
 					
 					remainingBytes -= sizeof(AudioSector); //sizeof(pSector->data);
 
 				}
+#endif
 				
 				// read next sector
 				fread(&sector, sizeof(Sector), 1, im->fp);
