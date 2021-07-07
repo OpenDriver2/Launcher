@@ -8,10 +8,18 @@
 #endif
 
 bool initsdl = 0;
-int waitingAction = 0;
-String waitingVal;
-EditString* waitingEdit = nullptr;
 SDL_Window*	waitingHWND = nullptr;
+
+#define CONTROL_BUTTON_CHANGER(name) \
+	name##Btn << [=] { \
+		if(waitingEdit) return; \
+		if(initsdl || !initsdl && InitSDL2()) { \
+			waitingAction = waitingController ? &controllerCtrls.gc_##name : &keyboardCtrls.kc_##name; \
+			waitingEdit = &##name##Val;\
+			waitingVal = ~(*waitingEdit);\
+			(*waitingEdit) <<= "Press a key...";\
+		}\
+	};
 
 ControlsWindow::ControlsWindow()
 {
@@ -21,16 +29,64 @@ ControlsWindow::ControlsWindow()
 		UpdateSDL2();
 	});
 	
-	crossBtn << [=] {
-		if(InitSDL2())
+	CONTROL_BUTTON_CHANGER(cross)
+	CONTROL_BUTTON_CHANGER(square)
+	CONTROL_BUTTON_CHANGER(circle)
+	CONTROL_BUTTON_CHANGER(triangle)
+	CONTROL_BUTTON_CHANGER(dpad_left)
+	CONTROL_BUTTON_CHANGER(dpad_right)
+	CONTROL_BUTTON_CHANGER(select)
+	
+	CONTROL_BUTTON_CHANGER(l1)
+	CONTROL_BUTTON_CHANGER(r1)
+	CONTROL_BUTTON_CHANGER(l2)
+	CONTROL_BUTTON_CHANGER(r2)
+	CONTROL_BUTTON_CHANGER(l3)
+	CONTROL_BUTTON_CHANGER(r3)
+	
+	revertBtn << [=] {
+		if(waitingController)
 		{
-			waitingAction = 0x10;
-			waitingEdit = &crossVal;
-			waitingVal = ~(*waitingEdit);
-
-			(*waitingEdit) <<= "Press a key...";
+			DefaultMappings(controllerCtrls);
 		}
+		else
+		{
+			DefaultMappings(keyboardCtrls);
+		}
+		InitButtons(waitingController);
 	};
+	
+	closeBtn << [=] {
+		Close();
+	};
+}
+
+void ControlsWindow::InitButtons(bool controller)
+{
+	waitingController = controller;
+	
+	if(controller)
+	{
+	}
+	else
+	{
+		crossVal <<= KeyboardScanToName(keyboardCtrls.kc_cross);
+		squareVal <<= KeyboardScanToName(keyboardCtrls.kc_square);
+		circleVal <<= KeyboardScanToName(keyboardCtrls.kc_circle);
+		triangleVal <<= KeyboardScanToName(keyboardCtrls.kc_triangle);
+		//crossVal <<= KeyboardScanToName(keyboardCtrls.kc_dpad_up);
+		//crossVal <<= KeyboardScanToName(keyboardCtrls.kc_dpad_down);
+		dpad_leftVal <<= KeyboardScanToName(keyboardCtrls.kc_dpad_left);
+		dpad_rightVal <<= KeyboardScanToName(keyboardCtrls.kc_dpad_right);
+		//crossVal <<= KeyboardScanToName(keyboardCtrls.kc_start);
+		selectVal <<= KeyboardScanToName(keyboardCtrls.kc_select);
+		l1Val <<= KeyboardScanToName(keyboardCtrls.kc_l1);
+		r1Val <<= KeyboardScanToName(keyboardCtrls.kc_r1);
+		l2Val <<= KeyboardScanToName(keyboardCtrls.kc_l2);
+		r2Val <<= KeyboardScanToName(keyboardCtrls.kc_r2);
+		l3Val <<= KeyboardScanToName(keyboardCtrls.kc_l3);
+		r3Val <<= KeyboardScanToName(keyboardCtrls.kc_r3);
+	}
 }
 
 void ControlsWindow::Close()
@@ -39,7 +95,7 @@ void ControlsWindow::Close()
 	{
 		(*waitingEdit) <<= waitingVal;
 		waitingEdit = nullptr;
-		waitingAction = 0;
+		waitingAction = nullptr;
 		
 		CloseSDL2();
 	}
@@ -79,9 +135,15 @@ void ControlsWindow::CloseSDL2()
 
 void ControlsWindow::UpdateSDL2()
 {
-	if(waitingAction == 0)
+	if(!waitingAction)
 		return;
 	
+	if(HasFocusDeep())
+	{
+		SDL_RaiseWindow(waitingHWND);
+		SDL_SetWindowInputFocus(waitingHWND);
+	}
+
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -94,6 +156,11 @@ void ControlsWindow::UpdateSDL2()
 				
 				if(nKey == SDL_SCANCODE_DELETE)
 				{
+					(*waitingAction) = SDL_SCANCODE_UNKNOWN;
+					(*waitingEdit) <<= "";
+					waitingEdit = nullptr;
+					waitingAction = nullptr;
+					
 					CloseSDL2();
 					break;
 				}
@@ -103,10 +170,10 @@ void ControlsWindow::UpdateSDL2()
 				// done?
 				if(event.type == SDL_KEYUP)
 				{
-					
+					(*waitingAction) = nKey;
 					(*waitingEdit) <<= waitingVal;
 					waitingEdit = nullptr;
-					waitingAction = 0;
+					waitingAction = nullptr;
 					
 					CloseSDL2();
 				}

@@ -37,6 +37,7 @@ ConfigWindow::ConfigWindow()
 	};
 	
 	keyboardCtrlsBtn << [=] {
+		ctrlWindow.InitButtons(false);
 		ctrlWindow.Open(this);
 	};
 	
@@ -117,12 +118,20 @@ void ConfigWindow::LoadConfig()
 	widescreenOverlaysCheck.Set(cfgData.widescreenOverlayAlign);
 	fastLoadingScreensCheck.Set(cfgData.fastLoadingScreens);
 	languageList.SetIndex(cfgData.languageId);
+	
+	// copy controls
+	ctrlWindow.keyboardCtrls = cfgData.keyboardCtrls;
+	ctrlWindow.controllerCtrls = cfgData.controllerCtrls;
 }
 
 bool ConfigWindow::StoreConfig()
 {
 	config_data_t cfgData;
 	BestDefaultConfig(&cfgData);
+	
+	// copy controls
+	cfgData.keyboardCtrls = ctrlWindow.keyboardCtrls;
+	cfgData.controllerCtrls = ctrlWindow.controllerCtrls;
 	
 	std::string imageFilenameStr = (~imageFilenameEdit).ToStd();
 

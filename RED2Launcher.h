@@ -16,7 +16,11 @@ extern const char* LanguageList[];
 class ControlsWindow : public WithKeyControlsWindow<TopWindow> {
 public:
 	ControlsWindow();
-		
+			
+	void InitButtons(bool controller);
+	
+	PsyXKeyboardMapping keyboardCtrls;
+	PsyXControllerMapping controllerCtrls;
 protected:
 	
 	typedef WithKeyControlsWindow<TopWindow> BaseCtrl;
@@ -26,6 +30,11 @@ protected:
 	bool InitSDL2();
 	void CloseSDL2();
 	void UpdateSDL2();
+	
+	String waitingVal;
+	int* waitingAction { nullptr };
+	EditString* waitingEdit { nullptr};
+	bool waitingController {false};
 };
 
 struct ConfigWindow : public WithConfigWindowLayout<TopWindow> {
