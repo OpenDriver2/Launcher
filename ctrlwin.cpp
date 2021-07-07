@@ -204,7 +204,60 @@ void ControlsWindow::UpdateSDL2()
 		
 		if(waitingController)
 		{
-			// TODO:
+			switch (event.type)
+			{
+				case SDL_CONTROLLERAXISMOTION:
+				{
+					SDL_GameControllerAxis axis = (SDL_GameControllerAxis)event.caxis.axis;
+					
+					Sint16 value = event.caxis.value;
+					
+					bool negateFlag = false;
+					
+					if(value < 0)
+					{
+						negateFlag = true;
+					}
+					
+					if(abs(value) >= 16384)
+					{
+						int axisIdx = axis | CONTROLLER_MAP_FLAG_AXIS;
+						
+						if(negateFlag)
+							axisIdx |= CONTROLLER_MAP_FLAG_INVERSE;
+						
+						waitingVal = ControllerMapToName(axisIdx);
+						
+						(*waitingAction) = axisIdx;
+						(*waitingEdit) <<= waitingVal;
+						waitingEdit = nullptr;
+						waitingAction = nullptr;
+						
+						CloseSDL2();
+					}
+					
+					break;
+				}
+				case SDL_CONTROLLERBUTTONDOWN:
+				case SDL_CONTROLLERBUTTONUP:
+				{
+					SDL_GameControllerButton nKey = (SDL_GameControllerButton)event.cbutton.button;
+
+					waitingVal = ControllerMapToName(nKey);
+
+					// done?
+					if(event.cbutton.state == SDL_RELEASED)
+					{
+						(*waitingAction) = nKey;
+						(*waitingEdit) <<= waitingVal;
+						waitingEdit = nullptr;
+						waitingAction = nullptr;
+						
+						CloseSDL2();
+					}
+					break;
+				}
+			}
 		}
 		else
 		{
@@ -213,9 +266,9 @@ void ControlsWindow::UpdateSDL2()
 				case SDL_KEYDOWN:
 				case SDL_KEYUP:
 				{
-					int nKey = event.key.keysym.scancode;
+					SDL_Scancode nKey = (SDL_Scancode)event.key.keysym.scancode;
 	
-					waitingVal = SDL_GetScancodeName((SDL_Scancode)nKey);
+					waitingVal = SDL_GetScancodeName(nKey);
 					
 					// done?
 					if(event.type == SDL_KEYUP)
@@ -227,7 +280,6 @@ void ControlsWindow::UpdateSDL2()
 						
 						CloseSDL2();
 					}
-					
 					break;
 				}
 			}
