@@ -9,6 +9,7 @@
 
 bool initsdl = 0;
 SDL_Window*	waitingHWND = nullptr;
+SDL_GameController* currentController = nullptr;
 
 #define CONTROL_BUTTON_CHANGER(name) \
 	name##Btn << [=] { \
@@ -126,6 +127,17 @@ bool ControlsWindow::InitSDL2()
 		return false;
 	}
 	
+	if(waitingController)
+	{
+		if(SDL_NumJoysticks() == 0)
+		{
+			Exclamation("At least one controller needs to be attached!");
+			return false;
+		}
+		
+		currentController = SDL_GameControllerOpen(0);
+	}
+	
 	initsdl = true;
 
 	waitingHWND = SDL_CreateWindow("Press a key...", -1, -1, 1, 1, SDL_WINDOW_TOOLTIP | SDL_WINDOW_ALWAYS_ON_TOP | SDL_WINDOW_BORDERLESS);
@@ -141,9 +153,11 @@ bool ControlsWindow::InitSDL2()
 
 void ControlsWindow::CloseSDL2()
 {
+	SDL_GameControllerClose(currentController);
 	SDL_DestroyWindow(waitingHWND);
 
 	waitingHWND = nullptr;
+	currentController = nullptr;
 
 	SDL_Quit();
 	initsdl = false;
