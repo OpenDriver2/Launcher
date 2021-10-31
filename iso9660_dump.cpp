@@ -121,7 +121,7 @@ bool DumpFileFunc(CDImage_t* im, TOC* toc, const char* filename, void* userData)
 	fread(&sector, sizeof(Sector), 1, im->fp);
 
 	interleaved = sector.subHead[0] == 1;
-	u_int remainingBytes = toc->fileSize[0];
+	int remainingBytes = toc->fileSize[0];
 	
 	if(*filename == PATH_SEPARATOR)
 		filename++;
