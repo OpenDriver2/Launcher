@@ -12,11 +12,11 @@ SDL_Window*	waitingHWND = nullptr;
 SDL_GameController* currentController = nullptr;
 
 #define CONTROL_BUTTON_CHANGER(name) \
-	name##Btn << [=] { \
+	name ## Btn << [=] { \
 		if(waitingEdit) return; \
 		if(initsdl || !initsdl && InitSDL2()) { \
-			waitingAction = waitingController ? &controllerCtrls.gc_##name : &keyboardCtrls.kc_##name; \
-			waitingEdit = &##name##Val;\
+			waitingAction = waitingController ? &controllerCtrls.gc_ ## name : &keyboardCtrls.kc_ ## name; \
+			waitingEdit = &name ## Val;\
 			waitingVal = ~(*waitingEdit);\
 			(*waitingEdit) <<= "Press a key...";\
 		}\
