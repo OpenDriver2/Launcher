@@ -5,13 +5,18 @@
 #include "iso9660_dump.h"
 
 void RunJPSXDec(const char* imageFilename)
-{
-	const char* indexesFile = "install\\idxfile.tmp";
-	
+{	
 #ifdef PLATFORM_WIN32
+	const char* indexesFile = "install\\idxfile.tmp";
 	system(Format("java -jar install\\jpsxdec.jar -f \"%s\" -x \"%s\"\n", imageFilename, indexesFile));
 	system(Format("java -jar install\\jpsxdec.jar -x \"%s\" -a video -quality psx -vf avi:mjpg -up Lanczos3", indexesFile));
 	system(Format("java -jar install\\jpsxdec.jar -x \"%s\" -a audio -quality psx -af wav", indexesFile));
+#endif
+#ifdef PLATFORM_LINUX
+	const char* indexesFile = "install/idxfile.tmp";
+	system(Format("java -jar install/jpsxdec.jar -f \"%s\" -x \"%s\"\n", imageFilename, indexesFile));
+	system(Format("java -jar install/jpsxdec.jar -x \"%s\" -a video -quality psx -vf avi:mjpg -up Lanczos3", indexesFile));
+	system(Format("java -jar install/jpsxdec.jar -x \"%s\" -a audio -quality psx -af wav", indexesFile));
 #endif
 }
 
