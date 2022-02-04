@@ -49,11 +49,16 @@ void RED2Launcher::LaunchGame()
 	si.dwFlags = STARTF_USESHOWWINDOW;
 	si.wShowWindow = SW_SHOWDEFAULT;
 
-	if(!CreateProcess("REDRIVER2.EXE", NULL, NULL, NULL, FALSE,
+	if(!CreateProcess("REDRIVER2_dev.EXE", NULL, NULL, NULL, FALSE,
 	                  CREATE_NO_WINDOW|NORMAL_PRIORITY_CLASS, NULL, NULL,
 	                  &si, &pi))
 	{
-		Exclamation("Unable to launch game!");
+		if(!CreateProcess("REDRIVER2.EXE", NULL, NULL, NULL, FALSE,
+	                      CREATE_NO_WINDOW|NORMAL_PRIORITY_CLASS, NULL, NULL,
+	                      &si, &pi))
+		{
+			Exclamation("Unable to launch game!");
+		}
 	}
 #endif
 #ifdef PLATFORM_LINUX
