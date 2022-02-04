@@ -1,6 +1,8 @@
 #include "config_ini_writer.h"
 #include <stdio.h>
-#include <string.h>
+#include <Core/Core.h>
+using namespace Upp;
+
 
 const char config_ini_kbcontrols[] = \
 "# Game keyboard controls (Psy-X layer PSX mapping)\r\n"
@@ -57,22 +59,24 @@ const char config_ini_settings[] = \
 "[render]\r\n"
 "windowWidth=1280\r\n"
 "windowHeight=720\r\n"
+"screenWidth=1280\r\n"
+"screenHeight=720\r\n"
 "fullscreen=%d				# enable full screen mode; it takes screen resolution\r\n"
+"vsync=1					# Prevents screen tearing in Full screen. Turn it off if you have framerate problems.\r\n"
 "pgxpTextureMapping=%d\r\n"
-"bilinearFiltering=%d			# \"smooth\" textures\r\n"
+"bilinearFiltering=%d		# \"smooth\" textures\r\n"
 "pgxpZbuffer=%d				# full Z-buffer on PSX polygons\r\n"
 "\r\n"
 "[game]\r\n"
 "languageId=%d				# 0 = ENGLISH; 1 = ITALIAN; 2 = GERMAN; 3 = FRENCH; 4 = SPANISH;\r\n"
 "drawDistance=1800			# 441..1800\r\n"
 "fieldOfView=%d				# 128..384, 256 is default\r\n"
-"disableChicagoBridges=%d		# Experimental: also activate AI roads\r\n"
+"disableChicagoBridges=%d	# Experimental: also activate AI roads\r\n"
 "freeCamera=1				# Press F7 in game to enable\r\n"
 "fastLoadingScreens=%d\r\n"
 "widescreenOverlays=%d		# set 1 to see map, bars and stats aligned to screen corners\r\n"
 "driver1music=0				# put Driver 1's MUSIC.BIN as D1MUSIC.BIN to DRIVER2\\SOUNDS folder\r\n"
-"overrideContent=%d			# this enables texture and car model modding\r\n"
-"userChases=RacingFreak,Snoopi,Olanov,Vortex,Fireboyd78";
+"overrideContent=%d			# this enables texture and car model modding\r\n";
 
 const char config_ini_fmt[] = \
 "[fs]\r\n"
@@ -135,17 +139,8 @@ void BestDefaultConfig(config_data_t* cfgData)
 // stores config.ini from template above
 bool SaveNewConfigFile(config_data_t* data)
 {
-	static char kbctrl_buffer[sizeof(config_ini_kbcontrols) + 2048];
-	memset(kbctrl_buffer, 0, sizeof(kbctrl_buffer));
-	
-	static char ctrl_buffer[sizeof(config_ini_controls) + 2048];
-	memset(ctrl_buffer, 0, sizeof(ctrl_buffer));
-	
-	static char buffer[sizeof(config_ini_settings) + 2048];
-	memset(buffer, 0, sizeof(buffer));
-	
 	// keyboard controls config
-	sprintf(kbctrl_buffer, config_ini_kbcontrols,
+	String kbControlsIniData = Format(config_ini_kbcontrols,
 		KeyboardScanToName(data->keyboardCtrls.kc_cross),
 		KeyboardScanToName(data->keyboardCtrls.kc_square),
 		KeyboardScanToName(data->keyboardCtrls.kc_circle),
@@ -165,7 +160,7 @@ bool SaveNewConfigFile(config_data_t* data)
 		);
 	
 	// controls config
-	sprintf(ctrl_buffer, config_ini_controls,
+	String controlsIniData = Format(config_ini_controls,
 		ControllerMapToName(data->controllerCtrls.gc_cross),
 		ControllerMapToName(data->controllerCtrls.gc_square),
 		ControllerMapToName(data->controllerCtrls.gc_circle),
@@ -187,9 +182,9 @@ bool SaveNewConfigFile(config_data_t* data)
 		ControllerMapToName(data->controllerCtrls.gc_axis_right_x),
 		ControllerMapToName(data->controllerCtrls.gc_axis_right_y)
 		);
-	
+		
 	// make actual config ini data
-	sprintf(buffer, config_ini_settings,
+	String configIniData = Format(config_ini_settings,
 		data->imageFilename ? "image" : "# image=install/Driver2CD1.bin",
 		data->imageFilename,
 		data->fullScreen,
@@ -202,7 +197,8 @@ bool SaveNewConfigFile(config_data_t* data)
 		data->fastLoadingScreens,
 		data->widescreenOverlayAlign,
 		data->imageFilename == NULL ? 1 : 0);
-		
+	
+
 	FILE* fp = fopen("config.ini", "wb");
 	if(!fp)
 	{
@@ -210,7 +206,7 @@ bool SaveNewConfigFile(config_data_t* data)
 	}
 	
 	// write final INI file contents
-	fprintf(fp, config_ini_fmt, kbctrl_buffer, ctrl_buffer, buffer);
+	fprintf(fp, config_ini_fmt, (const char*)kbControlsIniData, (const char*)controlsIniData, (const char*)configIniData);
 	
 	fclose(fp);
 	
